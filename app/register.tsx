@@ -1,15 +1,18 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import { BASE_URL } from '../config/config';
 
 export default function RegisterScreen() {
   const [nama, setNama] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  console.log(BASE_URL);
+
   const handleRegister = async () => {
     try {
-      const response = await fetch('http://103.27.206.93:8080/register', {
+      const response = await fetch(`${BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -20,9 +23,9 @@ export default function RegisterScreen() {
           password,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         alert('Register berhasil!');
         router.push('/login');
@@ -34,7 +37,6 @@ export default function RegisterScreen() {
       console.error('Register error:', error);
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -89,22 +91,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
+    height: 50, // Menyesuaikan tinggi input
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
+    paddingHorizontal: 15,
     marginBottom: 12,
-    borderRadius: 8,
+    borderRadius: 25, // Membuat input lebih bulat
+    fontSize: 16,
   },
   button: {
     backgroundColor: '#007AFF',
-    padding: 12,
-    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25, // Membuat tombol lebih bulat
     alignItems: 'center',
     marginTop: 10,
   },
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 16,
   },
   link: {
     marginTop: 20,

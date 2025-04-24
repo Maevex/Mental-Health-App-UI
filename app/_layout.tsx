@@ -1,10 +1,15 @@
-// import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import { Stack } from 'expo-router';
 
-// export default function RootLayout() {
-//   return (
-//     <Stack>
-//       <Stack.Screen name="login" options={{ title: "login page" }} />
-//       <Stack.Screen name="register" options={{ title: "register page" }} />
-//     </Stack>
-//   );
-// }
+export default function RootLayout() {
+    const [fontsLoaded] = useFonts({
+      'Poppins-Regular': require('../assets/fonts/Poppins-Regular.ttf'),
+      'Poppins-Bold': require('../assets/fonts/Poppins-Bold.ttf'),
+    });
+  
+    if (!fontsLoaded) {
+      return null; // atau splash screen
+    }
+  
+    return <Stack />;
+  }

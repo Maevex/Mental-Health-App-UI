@@ -1,28 +1,21 @@
-import { View, Text, TextInput, Button, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { BASE_URL } from '../config/config';
 
 export default function RegisterScreen() {
-//   const [nama, setNama] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
-      <Text style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 20, textAlign: 'center' }}>Login</Text>
+  const handleLogin = async () => {
+    // Implementasi login di sini
+    console.log('Login clicked');
+  };
 
-      {/* <TextInput
-        placeholder="Nama"
-        value={nama}
-        onChangeText={setNama}
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 10,
-          marginBottom: 10,
-          borderRadius: 5,
-        }}
-      /> */}
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
 
       <TextInput
         placeholder="Email"
@@ -30,13 +23,7 @@ export default function RegisterScreen() {
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 10,
-          marginBottom: 10,
-          borderRadius: 5,
-        }}
+        style={styles.input}
       />
 
       <TextInput
@@ -44,22 +31,64 @@ export default function RegisterScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
-        style={{
-          borderWidth: 1,
-          borderColor: '#ccc',
-          padding: 10,
-          marginBottom: 20,
-          borderRadius: 5,
-        }}
+        style={styles.input}
       />
 
-      <Button title="Login" onPress={() => console.log('Klik Login')} />
+      <TouchableOpacity onPress={handleLogin} style={styles.button}>
+        <Text style={styles.buttonText}>Login</Text>
+      </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/register')} style={{ marginTop: 20 }}>
-        <Text style={{ color: 'blue', textAlign: 'center' }}>
-          Belum punya akun? register
-        </Text>
+      <TouchableOpacity onPress={() => router.push('/register')} style={styles.link}>
+        <Text style={styles.linkText}>Belum punya akun? Register</Text>
       </TouchableOpacity>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 28,
+    fontFamily: 'Poppins-Bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  input: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 15,
+    marginBottom: 12,
+    borderRadius: 25,
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular', // <- penting ini!
+  },
+
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 25, // Membuat tombol lebih bulat
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+  
+    fontFamily: 'Poppins-Bold',
+    fontSize: 16,
+  },
+  link: {
+    marginTop: 20,
+  },
+  linkText: {
+    color: 'blue',
+    textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
+  },
+});
