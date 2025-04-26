@@ -3,15 +3,77 @@ import { useState } from 'react';
 import { router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { BASE_URL } from '../config/config';
+import { jwtDecode } from 'jwt-decode';
+import Toast from 'react-native-toast-message';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  interface MyJwtPayload {
+    role: string;
+    // bisa tambahin properti lain juga kalau ada, misalnya:
+    // email: string;
+    // userId: number;
+  }
+  
+
   const handleLogin = async () => {
-    // Implementasi login di sini
-    console.log('Login clicked');
+    console.log(BASE_URL);
+    try {
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+      console.log('Response JSON:', data); 
+  
+      if (response.ok) {
+        const token = data.token;
+        console.log('Token:', token); 
+        await SecureStore.setItemAsync('token', token);
+  
+        const decoded = jwtDecode<MyJwtPayload>(token);
+        console.log('Decoded Token:', decoded); 
+        
+        const role = decoded.role;
+        Toast.show({
+          type: 'success',
+          text1: 'Login berhasil',
+          text2: `Sebagai ${role}`,
+          position: 'bottom',
+          visibilityTime: 2000,
+          bottomOffset: 60,
+        });
+      
+        setTimeout(() => {
+        if (role === 'admin') {
+          router.replace('/admin/dash');
+        } else {
+          router.replace('/user/dash');
+        }
+      }, 800);}
+       else {
+        Toast.show({
+          type: 'error',
+          text1: 'Login gagal',
+          text2: data.message || 'Periksa kembali email/password',
+          position: 'bottom',
+          bottomOffset: 60,
+        });
+      }
+    } catch (error: any) {
+      alert('Terjadi kesalahan saat login');
+      console.error('Login error:', error.message || error);
+    }
   };
+  
+  
+  
 
   return (
     <View style={styles.container}>

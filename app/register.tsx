@@ -8,7 +8,7 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  console.log(BASE_URL);
+
 
   const handleRegister = async () => {
     try {
@@ -86,18 +86,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-Bold',
     marginBottom: 20,
     textAlign: 'center',
   },
   input: {
-    height: 50, // Menyesuaikan tinggi input
+    height: 50,
     borderWidth: 1,
     borderColor: '#ccc',
     paddingHorizontal: 15,
     marginBottom: 12,
-    borderRadius: 25, // Membuat input lebih bulat
+    borderRadius: 25,
     fontSize: 16,
+    fontFamily: 'Poppins-Regular', // <- penting ini!
   },
   button: {
     backgroundColor: '#007AFF',
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontFamily: 'Poppins-Bold',
     fontSize: 16,
   },
   link: {
@@ -118,5 +119,6 @@ const styles = StyleSheet.create({
   linkText: {
     color: 'blue',
     textAlign: 'center',
+    fontFamily: 'Poppins-Regular',
   },
 });
