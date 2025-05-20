@@ -9,13 +9,13 @@ export default function RootLayout() {
   });
 
   if (!fontsLoaded) {
-    return null; // bisa kamu ganti dengan SplashScreen juga
+    return null;
   }
 
   return (
     <>
       <Stack />
-      <Toast /> {/* ini penting, biar toast-nya bisa muncul */}
+      <Toast /> 
     </>
   );
 }

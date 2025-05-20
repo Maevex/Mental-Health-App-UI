@@ -5,8 +5,8 @@ export default function Index() {
   const rootNavigation = useRootNavigationState();
 
   useEffect(() => {
-    if (!rootNavigation?.key) return; // tunggu sampai layout siap
-    router.replace('/login'); // baru pindah halaman
+    if (!rootNavigation?.key) return; 
+    router.replace('/login'); 
   }, [rootNavigation]);
 
   return null;

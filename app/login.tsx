@@ -44,7 +44,7 @@ export default function RegisterScreen() {
         Toast.show({
           type: 'success',
           text1: 'Login berhasil',
-          text2: `Sebagai ${role}`,
+          // text2: `Sebagai ${role}`,
           position: 'bottom',
           visibilityTime: 2000,
           bottomOffset: 60,
