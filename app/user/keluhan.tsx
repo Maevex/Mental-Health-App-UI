@@ -28,13 +28,13 @@ export default function KeluhanScreen() {
 
       if (response.ok) {
         router.push({
-  pathname: '/user/hasil',
-  params: {
-    keluhan,
-    kategori,
-    kesimpulan: data.kesimpulan,
-    saran: data.saran,
-    rekomendasi: data.rekomendasi || ''
+          pathname: '/user/hasil',
+          params: {
+          keluhan,
+          kategori,
+          kesimpulan: data.kesimpulan,
+          saran: data.saran,
+          rekomendasi: data.rekomendasi || ''
   }
 });
 

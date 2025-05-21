@@ -1,8 +1,23 @@
 // app/user/hasil.tsx
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { useLocalSearchParams } from 'expo-router';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useLocalSearchParams, router } from 'expo-router';
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
+
+
+const renderWithBold = (text: string) => {
+  const parts = text.split(/(\*\*[^*]+\*\*)/);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <Text key={index} style={{ fontWeight: 'bold' }}>
+          {part.slice(2, -2)}
+        </Text>
+      );
+    }
+    return <Text key={index}>{part}</Text>;
+  });
+};
 
 export default function HasilScreen() {
   const { kategori, keluhan, kesimpulan, saran, rekomendasi, konsultan } = useLocalSearchParams();
@@ -33,8 +48,11 @@ useEffect(() => {
       <Text style={styles.label}>Keluhan: <Text style={styles.value}>"{keluhan}"</Text></Text>
 
       <Text style={styles.sectionTitle}>Kesimpulan Chatbot</Text>
-      <Text style={styles.value}><Text style={{ fontWeight: 'bold' }}>{kesimpulan}</Text></Text>
-      <Text style={styles.value}>{saran}</Text>
+      <Text style={styles.value}>{renderWithBold(kesimpulan as string)}</Text>
+      <Text style={styles.value}><Text style={{ fontWeight: 'bold' }}>{saran}</Text></Text>
+      <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname: '/user/ChatScreen' }as any)}> 
+  <Text style={styles.buttonText}>Mulai Chat</Text>
+</TouchableOpacity>
 
       {parsedKonsultan.length > 0 && (
         <>
@@ -45,11 +63,13 @@ useEffect(() => {
               <Text>{k.spesialisasi} ({k.pengalaman})</Text>
               <Text>Telp: {k.no_telepon}</Text>
               <Text>Email: {k.email}</Text>
+              
             </View>
           ))}
         </>
       )}
     </ScrollView>
+    
   );
 }
 
@@ -67,4 +87,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   konsultanName: { fontSize: 16, fontFamily: 'Poppins-Bold' },
+  button: {
+  backgroundColor: '#007AFF',
+  paddingVertical: 12,
+  borderRadius: 25,
+  alignItems: 'center',
+  marginTop: 20,
+},
+buttonText: {
+  color: '#fff',
+  fontFamily: 'Poppins-Bold',
+  fontSize: 16,
+},
+
 });
