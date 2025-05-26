@@ -5,6 +5,9 @@ import {
 } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { BASE_URL } from '../../config/config';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Animated, Easing } from 'react-native';
+import { useRef } from 'react';
 
 type Message = {
   sender: 'user' | 'bot';
@@ -23,6 +26,9 @@ export default function ChatScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const sidebarAnim = useRef(new Animated.Value(-200)).current; // mulai dari kiri luar layar
+
+  
 
   const fetchSesi = async () => {
     const token = await SecureStore.getItemAsync('token');
@@ -55,6 +61,14 @@ export default function ChatScreen() {
 
   setMessages(mappedMessages);
 };
+
+const getPreviewText = (id: number) => {
+  const sesiMessages = messages.filter((msg, index) => {
+    return sesiId === id && msg.sender === 'user';
+  });
+  return sesiMessages[0]?.content.slice(0, 20) + '...';
+};
+
 
 
   const handleNewChat = async () => {
@@ -102,11 +116,22 @@ export default function ChatScreen() {
     fetchSesi();
   }, []);
 
+  useEffect(() => {
+  Animated.timing(sidebarAnim, {
+    toValue: sidebarVisible ? 0 : -200, // geser masuk ke 0 atau keluar ke -200
+    duration: 300,
+    easing: Easing.out(Easing.ease),
+    useNativeDriver: false,
+  }).start();
+}, [sidebarVisible]);
+
+
     return (
     <View style={styles.wrapper}>
       {/* Sidebar */}
       {sidebarVisible && (
-        <View style={styles.sidebar}>
+        <Animated.View style={[styles.sidebar, { transform: [{ translateX: sidebarAnim }] }]}>
+
           <TouchableOpacity style={styles.newChatButton} onPress={handleNewChat}>
             <Text style={styles.newChatText}>+ New Chat</Text>
           </TouchableOpacity>
@@ -123,21 +148,30 @@ export default function ChatScreen() {
                   setSidebarVisible(false); // auto-tutup habis pilih
                 }}
               >
-                <Text style={styles.sesiText}>Sesi {sesi.sesi_id}</Text>
+               <Text style={styles.sesiText}>Sesi {sesi.sesi_id}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </View>
+        </Animated.View>
       )}
 
       {/* Chat Area */}
       <View style={styles.chatArea}>
         {/* Header with hamburger icon */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => setSidebarVisible(!sidebarVisible)}>
-            <Text style={styles.hamburger}>☰</Text>
-          </TouchableOpacity>
-        </View>
+        <LinearGradient
+  colors={['#007AFF', '#00C6FF']}
+  start={{ x: 0, y: 0 }}
+  end={{ x: 1, y: 0 }}
+  style={styles.header}
+>
+  <TouchableOpacity onPress={() => setSidebarVisible(!sidebarVisible)}>
+    <Text style={styles.hamburger}>☰</Text>
+  </TouchableOpacity>
+  
+  {sesiId && (
+    <Text style={styles.sesiInfo}>Sesi {sesiId}</Text>
+  )}
+</LinearGradient>
 
         <ScrollView contentContainerStyle={styles.chatContainer}>
           {messages.map((msg, index) => (
@@ -148,7 +182,10 @@ export default function ChatScreen() {
                 msg.sender === 'user' ? styles.userBubble : styles.botBubble,
               ]}
             >
-              <Text>{msg.content}</Text>
+              <Text style={{ color: msg.sender === 'user' ? '#fff' : '#000', fontFamily: 'Poppins-Regular' }}>
+  {msg.content}
+</Text>
+
             </View>
           ))}
         </ScrollView>
@@ -188,19 +225,27 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   messageBubble: {
-    padding: 12,
-    borderRadius: 10,
-    marginVertical: 4,
-    maxWidth: '80%',
-  },
-  userBubble: {
-    alignSelf: 'flex-end',
-    backgroundColor: '#DCF8C6',
-  },
-  botBubble: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#E6E6E6',
-  },
+  padding: 12,
+  borderRadius: 20,
+  marginVertical: 6,
+  maxWidth: '80%',
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.05,
+  shadowRadius: 3,
+  elevation: 1,
+},
+userBubble: {
+  alignSelf: 'flex-end',
+  backgroundColor: '#007AFF',
+  borderTopRightRadius: 0,
+},
+botBubble: {
+  alignSelf: 'flex-start',
+  backgroundColor: '#eaeaea',
+  borderTopLeftRadius: 0,
+},
+
   messageText: {
     fontSize: 16,
   },
@@ -212,22 +257,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  input: {
+   input: {
   flex: 1,
   minHeight: 40,
   maxHeight: 100,
-  borderWidth: 1,
-  borderColor: '#ccc',
-  borderRadius: 20, // ubah dari 8 jadi 20
+  borderRadius: 25,
   paddingVertical: 10,
   paddingHorizontal: 16,
-  textAlignVertical: 'top',
-  backgroundColor: '#fff',
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 1 },
-  shadowOpacity: 0.1,
-  shadowRadius: 2,
-  elevation: 2,
+  backgroundColor: '#f9f9f9',
   fontFamily: 'Poppins-Regular',
 },
 
@@ -246,13 +283,25 @@ disabledButton: {
   backgroundColor: '#A0A0A0',
 },
 sidebar: {
-  width: 160, // kasih lebar lebih besar biar nyaman
-  backgroundColor: '#f4f4f4',
+  width: 160,
   padding: 10,
   borderRightWidth: 1,
   borderColor: '#ccc',
-  height: '100%', // tambah ini agar sidebar mengisi penuh
+  height: '100%',
+  backgroundColor: '#f0f4ff',
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  bottom: 0,
+  shadowColor: '#000',
+  shadowOffset: { width: 2, height: 0 },
+  shadowOpacity: 0.2,
+  shadowRadius: 4,
+  elevation: 5,
+  zIndex: 999,
 },
+
+
 
 
 newChatButton: {
@@ -286,11 +335,11 @@ sesiText: {
 
 chatArea: {
   flex: 1,
-  padding: 10,
-  backgroundColor: '#fff', // opsional: tambahkan biar kontras
+  backgroundColor: '#fff',
 },
 
 chatContainer: {
+  paddingHorizontal: 10, // hanya horizontal
   paddingBottom: 100,
 },
 
@@ -299,19 +348,29 @@ chatContainer: {
 sendText: {
   color: '#fff',
   fontWeight: 'bold',
+  fontSize: 16,
 },
 header: {
   flexDirection: 'row',
   alignItems: 'center',
-  padding: 10,
+  paddingVertical: 10,
+  paddingHorizontal: 16,
   borderBottomWidth: 1,
   borderBottomColor: '#ccc',
+  backgroundColor: '#fff', // biar warnanya seragam
 },
+
 
 hamburger: {
   fontSize: 24,
   fontWeight: 'bold',
 },
 
+sesiInfo: {
+  marginLeft: 16,
+  color: '#fff',
+  fontSize: 16,
+  fontFamily: 'Poppins-Regular',
+},
 
 });
