@@ -8,7 +8,7 @@ import { BASE_URL } from '../../config/config';
 
 export default function KeluhanScreen() {
     
-  const { kategori } = useLocalSearchParams();
+  const { kategori, sub_kategori } = useLocalSearchParams();
   const [keluhan, setKeluhan] = useState('');
 
   const handleSubmit = async () => {
@@ -20,7 +20,7 @@ export default function KeluhanScreen() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ keluhan, kategori }),
+        body: JSON.stringify({ keluhan, kategori, sub_kategori }),
       });
       const data = await response.json();
       await SecureStore.setItemAsync('konsultanData', JSON.stringify(data.konsultan || []));
@@ -50,7 +50,7 @@ export default function KeluhanScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Keluhanmu tentang {kategori}</Text>
+      <Text style={styles.title}>Keluhanmu tentang {sub_kategori}</Text>
       <TextInput
         placeholder="Tulis keluhanmu di sini..."
         multiline
