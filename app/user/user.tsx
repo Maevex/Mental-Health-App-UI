@@ -1,9 +1,44 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { useEffect, useState } from 'react';
 import { router } from 'expo-router';
+import * as SecureStore from 'expo-secure-store';
+import { BASE_URL } from '../../config/config'; // pastikan path benar
 
 export default function UserScreen() {
+  const [user, setUser] = useState<{ nama: string; email: string } | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const token = await SecureStore.getItemAsync('token');
+        if (!token) throw new Error('Token tidak ditemukan');
+
+        const response = await fetch(`${BASE_URL}/myuser`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.message || 'Gagal memuat data');
+
+        setUser(data);
+      } catch (error: any) {
+        console.error('Fetch user error:', error.message);
+        Alert.alert('Error', error.message || 'Gagal memuat profil');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   const handleEditProfile = () => {
-    router.push('/user/edit'); // pastikan file edit.tsx ada
+    router.push('/user/edit');
   };
 
   const handleLogout = () => {
@@ -12,14 +47,23 @@ export default function UserScreen() {
       {
         text: 'Logout',
         style: 'destructive',
-        onPress: () => {
-          // TODO: hapus token dari storage, lalu navigate
-          // contoh: await AsyncStorage.removeItem('token');
+        onPress: async () => {
+          await SecureStore.deleteItemAsync('token');
           router.replace('/login');
         },
       },
     ]);
   };
+
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <View style={styles.container}>
@@ -28,20 +72,19 @@ export default function UserScreen() {
       <View style={styles.profileCard}>
         <Image
           source={{
-            uri: 'https://ui-avatars.com/api/?name=Ilham+Saputra&background=007AFF&color=fff&size=128',
+            uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}&background=007AFF&color=fff&size=128`,
           }}
           style={styles.avatar}
         />
 
         <View style={styles.info}>
           <Text style={styles.label}>Nama</Text>
-          <Text style={styles.value}>Ilham </Text>
+          <Text style={styles.value}>{user.nama}</Text>
 
           <Text style={styles.label}>Email</Text>
-          <Text style={styles.value}>ilham@example.com</Text>
+          <Text style={styles.value}>{user.email}</Text>
 
-          <Text style={styles.label}>No. Telepon</Text>
-          <Text style={styles.value}>+62 812-3456-7890</Text>
+          
         </View>
 
         <View style={styles.buttonContainer}>
@@ -57,6 +100,7 @@ export default function UserScreen() {
     </View>
   );
 }
+
 
 
 const styles = StyleSheet.create({

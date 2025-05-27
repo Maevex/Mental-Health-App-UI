@@ -69,6 +69,7 @@ export default function UserLayout() {
       <Tabs.Screen name="hasil" options={{ href: null }} />
       <Tabs.Screen name="keluhan" options={{ href: null }} />
       <Tabs.Screen name="subkategori" options={{ href: null }} />
+      <Tabs.Screen name="edit" options={{ href: null }} />
     </Tabs>
   );
 }

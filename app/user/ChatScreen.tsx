@@ -69,6 +69,20 @@ const getPreviewText = (id: number) => {
   return sesiMessages[0]?.content.slice(0, 20) + '...';
 };
 
+const renderWithBold = (text: string) => {
+  const parts = text.split(/(\*\*[^*]+\*\*)/);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return (
+        <Text key={index} style={{ fontWeight: 'bold' }}>
+          {part.slice(2, -2)}
+        </Text>
+      );
+    }
+    return <Text key={index}>{part}</Text>;
+  });
+};
+
 
 
   const handleNewChat = async () => {
@@ -182,9 +196,15 @@ const getPreviewText = (id: number) => {
                 msg.sender === 'user' ? styles.userBubble : styles.botBubble,
               ]}
             >
-              <Text style={{ color: msg.sender === 'user' ? '#fff' : '#000', fontFamily: 'Poppins-Regular' }}>
-  {msg.content}
-</Text>
+              {msg.sender === 'bot' ? (
+  <Text style={{ color: '#000', fontFamily: 'Poppins-Regular', flexWrap: 'wrap' }}>
+    {renderWithBold(msg.content)}
+  </Text>
+) : (
+  <Text style={{ color: '#fff', fontFamily: 'Poppins-Regular' }}>
+    {msg.content}
+  </Text>
+)}
 
             </View>
           ))}
