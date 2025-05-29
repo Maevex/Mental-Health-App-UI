@@ -4,6 +4,9 @@ import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react
 import * as SecureStore from 'expo-secure-store';
 import { BASE_URL } from '../../config/config';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
+
 
 interface Konsultan {
   id: number;
@@ -17,6 +20,13 @@ interface Konsultan {
 export default function KonsultanList() {
   const [data, setData] = useState<Konsultan[]>([]);
 
+  useFocusEffect(
+  useCallback(() => {
+    fetchKonsultan();
+  }, [])
+);
+
+
   const fetchKonsultan = async () => {
     const token = await SecureStore.getItemAsync('token');
     const res = await fetch(`${BASE_URL}/consultants`, {
@@ -28,6 +38,7 @@ export default function KonsultanList() {
     console.log('Data konsultan:', json);
     
   };
+  
 
   const handleDelete = async (id: number) => {
     Alert.alert(
@@ -71,7 +82,7 @@ export default function KonsultanList() {
         <TouchableOpacity 
         onPress={() => 
             router.push({
-            pathname: '/admin/editConsultant/[id]',
+            pathname: '/admin/editconsultant/[id]',
             params: { id: item.id.toString() },
             } as any)
             
