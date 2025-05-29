@@ -3,6 +3,8 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView 
 import * as SecureStore from 'expo-secure-store';
 import { BASE_URL } from '../../config/config';
 import { router } from 'expo-router';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 export default function AddConsultant() {
   const [nama, setNama] = useState('');
