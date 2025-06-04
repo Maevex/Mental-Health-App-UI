@@ -106,7 +106,7 @@ export default function UserScreen() {
 
             <Image
               source={{
-                uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}&background=007AFF&color=fff&size=128`,
+                uri: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.nama)}&background=4d9eff&color=fff&size=128`,
               }}
               style={styles.avatar}
             />
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontFamily: 'Poppins-Regular',
+    fontFamily: 'Poppins-Bold',
     color: '#666',
     marginTop: 12,
   },

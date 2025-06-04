@@ -116,7 +116,9 @@ export default function RegisterScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY }] }]}>
-          <Text style={styles.title}>Start Your Journey with Serenity</Text>
+          <Text style={styles.title}>
+            Start Your Journey with <Text style={[styles.title, { color: '#4d9eff' }]}>Serenity</Text>
+          </Text>
 
           <TextInput
             placeholder="Nama"

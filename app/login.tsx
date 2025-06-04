@@ -117,7 +117,9 @@ const handlePressOut = () => {
       >
         <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY }] }]}>
 
-          <Text style={styles.title}>Find Peace with Serenity</Text>
+          <Text style={styles.title}>
+  Find Peace with <Text style={[styles.title, { color: '#4d9eff' }]}>Serenity</Text>
+</Text>
           <Text style={styles.subtitle}>Let your thoughts be heard</Text>
 
 
