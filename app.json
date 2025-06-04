@@ -15,7 +15,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.maevex.mentalhealthappui"
     },
     "web": {
       "bundler": "metro",
@@ -38,6 +39,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "17722453-9411-44e1-af2b-112b064645ea"
+      }
     }
   }
 }

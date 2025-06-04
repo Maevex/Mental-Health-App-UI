@@ -57,57 +57,69 @@ const handlePressOut = () => {
   }
 
   const handleLogin = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+  if (!email || !password) {
+    Toast.show({
+      type: 'error',
+      text1: 'Email dan password wajib diisi',
+      position: 'bottom',
+      bottomOffset: 60,
+    });
+    return;
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      const token = data.token;
+      await SecureStore.setItemAsync('token', token);
+
+      const decoded = jwtDecode<MyJwtPayload>(token);
+      const role = decoded.role;
+
+      Toast.show({
+        type: 'success',
+        text1: 'Login berhasil',
+        position: 'bottom',
+        visibilityTime: 2000,
+        bottomOffset: 60,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        const token = data.token;
-        await SecureStore.setItemAsync('token', token);
-
-        const decoded = jwtDecode<MyJwtPayload>(token);
-        const role = decoded.role;
-
-        Toast.show({
-          type: 'success',
-          text1: 'Login berhasil',
-          position: 'bottom',
-          visibilityTime: 2000,
-          bottomOffset: 60,
-        });
-
-        setTimeout(() => {
-          router.replace(role === 'admin' ? '/admin/dash' : '/user/dash');
-        }, 800);
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Login gagal',
-          text2: data.message || 'Periksa kembali email/password',
-          position: 'bottom',
-          bottomOffset: 60,
-        });
-      }
-    } catch (error: any) {
-      alert('Terjadi kesalahan saat login');
-      console.error('Login error:', error.message || error);
+      setTimeout(() => {
+        router.replace(role === 'admin' ? '/admin/dash' : '/user/dash');
+      }, 800);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Login gagal',
+        text2: data.message || 'Periksa kembali email/password',
+        position: 'bottom',
+        bottomOffset: 60,
+      });
     }
-  };
+  } catch (error: any) {
+    alert('Terjadi kesalahan saat login');
+    console.error('Login error:', error.message || error);
+  }
+};
 
   return (
-    <LinearGradient colors={['#A1C4FD', '#C2E9FB']} style={styles.gradient}>
+    <LinearGradient colors={['#89f7fe', '#66a6ff']} style={styles.gradient}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY }] }]}>
 
-          <Text style={styles.title}>Selamat Datang</Text>
+          <Text style={styles.title}>Find Peace with Serenity</Text>
+          <Text style={styles.subtitle}>Let your thoughts be heard</Text>
+
 
           <TextInput
             placeholder="Email"
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
-    marginBottom: 24,
+    // marginBottom: 24,
     color: '#333',
   },
   input: {
@@ -191,7 +203,7 @@ const styles = StyleSheet.create({
   elevation: 2,
   },
   button: {
-    backgroundColor: '#5E9CFF',
+    backgroundColor: '#4d9eff',
     paddingVertical: 12,
     borderRadius: 15,
     alignItems: 'center',
@@ -199,7 +211,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
     fontSize: 16,
   },
   link: {
@@ -210,4 +222,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Poppins-Regular',
   },
+  subtitle: {
+  fontSize: 14,
+  fontFamily: 'Poppins-Regular',
+  textAlign: 'center',
+  color: '#555',
+  marginBottom: 20,
+},
 });

@@ -12,6 +12,8 @@ import {
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 export default function UserDashboard() {
   const issues = [
@@ -26,24 +28,29 @@ export default function UserDashboard() {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(20)).current;
 
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 700,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 700,
-        easing: Easing.out(Easing.exp),
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
+  useFocusEffect(() => {
+  // Reset nilai animasi ke awal
+  fadeAnim.setValue(0);
+  translateY.setValue(20);
+
+  Animated.parallel([
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 700,
+      useNativeDriver: true,
+    }),
+    Animated.timing(translateY, {
+      toValue: 0,
+      duration: 700,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: true,
+    }),
+  ]).start();
+});
+
 
   return (
-    <LinearGradient colors={['#A1C4FD', '#C2E9FB']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#89f7fe', '#66a6ff']} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY }] }]}>
           <Text style={styles.title}>Apa yang kamu rasakan hari ini?</Text>
@@ -118,7 +125,7 @@ const styles = StyleSheet.create({
   },
   issueText: {
     fontSize: 16,
-    fontFamily: 'Poppins-Medium',
+    fontFamily: 'Poppins-Regular',
     color: '#1565C0',
     textAlign: 'center',
   },

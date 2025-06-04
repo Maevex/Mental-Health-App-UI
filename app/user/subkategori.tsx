@@ -1,12 +1,42 @@
 // app/user/subkategori.tsx
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Animated,
+  Easing,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MotiView } from 'moti';
+import { useEffect, useRef } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function SubkategoriPage() {
   const { kategori } = useLocalSearchParams();
 
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(20)).current;
+
+  useFocusEffect(() => {
+    fadeAnim.setValue(0);
+    translateY.setValue(20);
+
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 700,
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 700,
+        easing: Easing.out(Easing.exp),
+        useNativeDriver: true,
+      }),
+    ]).start();
+  });
 
   const subMasalah: { [key: string]: string[] } = {
   'Masalah di Kampus': [
@@ -147,18 +177,14 @@ export default function SubkategoriPage() {
   const list = originalList.sort(() => Math.random() - 0.5).slice(0, 5);
 
   return (
-    <LinearGradient colors={['#E3F2FD', '#FFFFFF']} style={{ flex: 1 }}>
+    <LinearGradient colors={['#89f7fe', '#66a6ff']} style={{ flex: 1 }}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.title}>{kategori}</Text>
-        <View style={styles.list}>
-          {list.map((item, index) => (
-            <MotiView
-              from={{ opacity: 0, translateY: 20 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              transition={{ delay: index * 100, type: 'timing', duration: 400 }}
-              key={index}
-            >
+        <Animated.View style={[styles.card, { opacity: fadeAnim, transform: [{ translateY }] }]}>
+          <Text style={styles.title}>{kategori}</Text>
+          <View style={styles.list}>
+            {list.map((item, index) => (
               <Pressable
+                key={index}
                 style={({ pressed }) => [
                   styles.issueButton,
                   pressed && styles.pressed,
@@ -172,9 +198,9 @@ export default function SubkategoriPage() {
               >
                 <Text style={styles.issueText}>{item}</Text>
               </Pressable>
-            </MotiView>
-          ))}
-        </View>
+            ))}
+          </View>
+        </Animated.View>
       </ScrollView>
     </LinearGradient>
   );
@@ -184,10 +210,20 @@ const styles = StyleSheet.create({
   container: {
     padding: 24,
     flexGrow: 1,
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+  },
+  card: {
+    backgroundColor: '#ffffffdd',
+    padding: 24,
+    borderRadius: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 8,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
     marginBottom: 28,
@@ -205,7 +241,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -215,7 +251,7 @@ const styles = StyleSheet.create({
   },
   issueText: {
     fontSize: 16,
-    fontFamily: 'Poppins-Medium',
+    fontFamily: 'Poppins-Regular',
     color: '#1565C0',
     textAlign: 'center',
   },

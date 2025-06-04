@@ -92,7 +92,7 @@ export default function EditProfileScreen() {
   }
 
   return (
-    <LinearGradient colors={['#A1C4FD', '#C2E9FB']} style={styles.gradient}>
+    <LinearGradient colors={['#89f7fe', '#66a6ff']} style={styles.gradient}>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    backgroundColor: '#5E9CFF',
+    backgroundColor: '#4d9eff',
     paddingVertical: 12,
     borderRadius: 15,
     alignItems: 'center',
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff',
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Bold',
     fontSize: 16,
   },
   loadingContainer: {

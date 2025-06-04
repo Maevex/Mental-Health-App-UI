@@ -1,4 +1,13 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
@@ -21,6 +30,7 @@ export default function KeluhanScreen() {
         },
         body: JSON.stringify({ keluhan, kategori, sub_kategori }),
       });
+
       const data = await response.json();
       await SecureStore.setItemAsync('konsultanData', JSON.stringify(data.konsultan || []));
 
@@ -45,10 +55,18 @@ export default function KeluhanScreen() {
   };
 
   return (
-    <LinearGradient colors={['#E3F2FD', '#FFFFFF']} style={{ flex: 1 }}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+    <LinearGradient colors={['#89f7fe', '#66a6ff']} style={styles.gradient}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{ flex: 1 }}
+      >
         <ScrollView contentContainerStyle={styles.container}>
-          <MotiView from={{ opacity: 0, translateY: 30 }} animate={{ opacity: 1, translateY: 0 }} transition={{ duration: 600 }}>
+          <MotiView
+            from={{ opacity: 0, translateY: 30 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ duration: 600 }}
+            style={styles.card}
+          >
             <Text style={styles.title}>Keluhanmu tentang:</Text>
             <Text style={styles.subtitle}>{sub_kategori}</Text>
 
@@ -58,12 +76,11 @@ export default function KeluhanScreen() {
               style={styles.input}
               value={keluhan}
               onChangeText={setKeluhan}
+              placeholderTextColor="#999"
             />
 
-            <TouchableOpacity onPress={handleSubmit} style={styles.buttonWrapper}>
-              <LinearGradient colors={['#1565C0', '#42A5F5']} style={styles.button}>
-                <Text style={styles.buttonText}>Kirim</Text>
-              </LinearGradient>
+            <TouchableOpacity onPress={handleSubmit} activeOpacity={0.8} style={styles.button}>
+              <Text style={styles.buttonText}>Kirim</Text>
             </TouchableOpacity>
           </MotiView>
         </ScrollView>
@@ -72,52 +89,63 @@ export default function KeluhanScreen() {
   );
 }
 
-import { ScrollView } from 'react-native';
-
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     padding: 24,
     flexGrow: 1,
     justifyContent: 'center',
   },
+  card: {
+    backgroundColor: '#fff',
+    padding: 24,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
   title: {
     fontSize: 22,
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
-    color: '#0D47A1',
-    marginBottom: 8,
+    color: '#333',
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Poppins-Regular',
     textAlign: 'center',
-    color: '#333',
-    marginBottom: 20,
+    color: '#444',
+    marginBottom: 18,
   },
   input: {
     height: 150,
-    backgroundColor: '#fff',
+    backgroundColor: '#f0f4f8',
     borderRadius: 16,
     padding: 16,
     textAlignVertical: 'top',
     fontFamily: 'Poppins-Regular',
     fontSize: 15,
-    borderColor: '#BBDEFB',
+    borderColor: '#d1e3ff',
     borderWidth: 1.5,
     shadowColor: '#000',
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
-    marginBottom: 24,
-  },
-  buttonWrapper: {
-    borderRadius: 30,
-    overflow: 'hidden',
+    elevation: 2,
+    marginBottom: 20,
+    color: '#333',
   },
   button: {
-    paddingVertical: 14,
+    backgroundColor: '#4d9eff',
+    paddingVertical: 12,
+    borderRadius: 15,
     alignItems: 'center',
-    borderRadius: 30,
+    marginTop: 4,
   },
   buttonText: {
     color: '#fff',

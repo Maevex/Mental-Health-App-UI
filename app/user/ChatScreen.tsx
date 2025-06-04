@@ -173,7 +173,8 @@ const renderWithBold = (text: string) => {
       <View style={styles.chatArea}>
         {/* Header with hamburger icon */}
         <LinearGradient
-  colors={['#007AFF', '#00C6FF']}
+  colors={['#66a6ff', '#89f7fe']}
+  
   start={{ x: 0, y: 0 }}
   end={{ x: 1, y: 0 }}
   style={styles.header}
@@ -257,7 +258,7 @@ const styles = StyleSheet.create({
 },
 userBubble: {
   alignSelf: 'flex-end',
-  backgroundColor: '#007AFF',
+  backgroundColor: '#4d9eff',
   borderTopRightRadius: 0,
 },
 botBubble: {
@@ -289,7 +290,7 @@ botBubble: {
 },
 
 sendButton: {
-  backgroundColor: '#007AFF',
+  backgroundColor: '#4d9eff',
   paddingVertical: 10,
   paddingHorizontal: 20,
   borderRadius: 20,
@@ -325,7 +326,7 @@ sidebar: {
 
 
 newChatButton: {
-  backgroundColor: '#007AFF',
+  backgroundColor: '#4d9eff',
   padding: 10,
   borderRadius: 8,
   marginBottom: 10,
@@ -334,7 +335,7 @@ newChatButton: {
 newChatText: {
   color: '#fff',
   textAlign: 'center',
-  fontWeight: 'bold',
+  fontFamily: 'Poppins-Bold',
 },
 
 sesiButton: {
@@ -351,6 +352,7 @@ activeSesiButton: {
 sesiText: {
   fontSize: 14,
   textAlign: 'center',
+  fontFamily: 'Poppins-Regular',
 },
 
 chatArea: {
